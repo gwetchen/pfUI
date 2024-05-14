@@ -1470,8 +1470,8 @@ function pfUI.uf:RefreshUnit(unit, component)
 
   -- create required fields
   local unitstr = unit.label..unit.id
+  local _, guid
   if superwow_active then
-    local _, guid
     _, guid = UnitExists(unitstr)
   end
   local rawborder, default_border = GetBorderSize("unitframes")
@@ -1784,7 +1784,11 @@ function pfUI.uf:RefreshUnit(unit, component)
         if texture then
           local timeleft, name, _
           if libdebuff then
-            name, _, texture, _, _, _, timeleft = libdebuff:UnitDebuff(unitstr, i)
+            if superwow_active then
+              name, _, texture, _, _, _, timeleft = libdebuff:UnitDebuff(unitstr, i, guid)
+            else
+              name, _, texture, _, _, _, timeleft = libdebuff:UnitDebuff(unitstr, i)
+            end
           else
             scanner:SetUnitDebuff(unitstr, i)
             name = scanner:Line(1) or ""

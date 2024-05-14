@@ -89,7 +89,17 @@ pfUI:RegisterModule("buffwatch", "vanilla:tbc", function ()
 
       return remaining, texture, name, stacks
     elseif libdebuff then
-      local name, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unit, id)
+      local name, rank, texture, stacks, dtype, duration, timeleft
+      local _, guid
+      if superwow_active then
+        _, guid = UnitExists(unit)
+      end
+
+      if superwow_active then
+        name, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unit, id, guid)
+      else
+        name, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unit, id)
+      end
       return timeleft, texture, name, stacks
     end
   end
