@@ -34,6 +34,8 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
 
 
       if not libdebuff.objects[target] then libdebuff.objects[target] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
+      if not libdebuff.objects[target][0] then libdebuff.objects[target][0] = {} end
+      if not libdebuff.objects[target][0][spell] then libdebuff.objects[target][0][spell] = {} end
       libdebuff.objects[target][0][spell].effect = spell
       libdebuff.objects[target][0][spell].start_old = libdebuff.objects[target][0][spell].start
       libdebuff.objects[target][0][spell].start = GetTime()
