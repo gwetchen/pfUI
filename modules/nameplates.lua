@@ -139,7 +139,13 @@ pfUI:RegisterModule("nameplates", "vanilla:tbc", function ()
     if not self.debuffcache then self.debuffcache = {} end
 
     for id = 1, 16 do
-      local effect, _, texture, stacks, _, duration, timeleft = libdebuff:UnitDebuff(unitstr, id)
+      local effect, _, texture, stacks, _, duration, timeleft, _, guid
+      if superwow_active then
+        _, guid = UnitExists(unitstr)
+        effect, _, texture, stacks, _, duration, timeleft = libdebuff:UnitDebuff(unitstr, id, guid)
+      else
+        effect, _, texture, stacks, _, duration, timeleft = libdebuff:UnitDebuff(unitstr, id)
+      end
       if effect and timeleft then
         local start = GetTime() - ( (duration or 0) - ( timeleft or 0) )
         local stop = GetTime() + ( timeleft or 0 )
@@ -685,8 +691,13 @@ pfUI:RegisterModule("nameplates", "vanilla:tbc", function ()
 
       -- update all debuff icons
       for i = 1, 16 do
-        local effect, rank, texture, stacks, dtype, duration, timeleft
-        if unitstr then
+        local effect, rank, texture, stacks, dtype, duration, timeleft, _, guid
+        if superwow_active then
+          _, guid = UnitExists(unitstr)
+        end
+        if guid then
+          effect, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unitstr, i, guid)
+        elseif unitstr then
           effect, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unitstr, i)
         elseif plate.verify == verify then
           effect, rank, texture, stacks, dtype, duration, timeleft = plate:UnitDebuff(i)
