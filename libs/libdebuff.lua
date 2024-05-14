@@ -239,10 +239,7 @@ hooksecurefunc("UseAction", function(slot, target, button)
 end, true)
 
 function libdebuff:UnitDebuff(unit, id, guid)
-  local unitname = UnitName(unit)
-  if superwow_active and guid then
-    unitname = guid -- guid, if desired guid could be a seperate variable but that would lead to doubling code below
-  end
+  local unitname = guid or UnitName(unit)
   local unitlevel = UnitLevel(unit)
   local texture, stacks, dtype = UnitDebuff(unit, id)
   local duration, timeleft = nil, -1
