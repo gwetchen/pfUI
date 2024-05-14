@@ -14,9 +14,9 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
       local start = GetTime()
 
       -- get spell info from spell id
-      local spell, icon, _
+      local spell, icon, rank
       if SpellInfo and SpellInfo(spell_id) then
-        spell, _, icon = SpellInfo(spell_id)
+        spell, rank, icon = SpellInfo(spell_id)
       end
 
       -- set fallback values
@@ -25,12 +25,20 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
 
       -- add cast action to the database
       if not libcast.db[guid] then libcast.db[guid] = {} end
-      libcast.db[guid].cast = spell
+      libcast.db[guid].unit = spell
       libcast.db[guid].rank = nil
       libcast.db[guid].start = GetTime()
       libcast.db[guid].casttime = timer
       libcast.db[guid].icon = icon
       libcast.db[guid].channel = event_type == "CHANNEL" or false
+
+
+      if not libdebuff.objects[target] then libdebuff.objects[target] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
+      libdebuff.objects[target][0][spell].effect = spell
+      libdebuff.objects[target][0][spell].start_old = libdebuff.objects[target][0][spell].start
+      libdebuff.objects[target][0][spell].start = GetTime()
+      libdebuff.objects[target][0][spell].rank = rank --not used for anything right now, can remove if no usecase found
+      libdebuff.objects[target][0][spell].duration = libdebuff:GetDuration(spell, rank)
 
       -- write state variable
       superwow_active = true
