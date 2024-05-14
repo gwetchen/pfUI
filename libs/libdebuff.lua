@@ -241,8 +241,7 @@ end, true)
 function libdebuff:UnitDebuff(unit, id)
   local unitname = UnitName(unit)
   if superwow_active then
-    local _
-    _, unitname = UnitExists(unit) --the second arg for this is unitGUID but it's easier to stick with the same variable name for now
+    unitname = unit -- guid, if desired guid could be a seperate variable but that would lead to doubling code below
   end
   local unitlevel = UnitLevel(unit)
   local texture, stacks, dtype = UnitDebuff(unit, id)
