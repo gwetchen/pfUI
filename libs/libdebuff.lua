@@ -238,10 +238,10 @@ hooksecurefunc("UseAction", function(slot, target, button)
   libdebuff:AddPending(UnitName("target"), UnitLevel("target"), effect, duration)
 end, true)
 
-function libdebuff:UnitDebuff(unit, id)
+function libdebuff:UnitDebuff(unit, id, guid)
   local unitname = UnitName(unit)
-  if superwow_active then
-    unitname = unit -- guid, if desired guid could be a seperate variable but that would lead to doubling code below
+  if superwow_active and guid then
+    unitname = guid -- guid, if desired guid could be a seperate variable but that would lead to doubling code below
   end
   local unitlevel = UnitLevel(unit)
   local texture, stacks, dtype = UnitDebuff(unit, id)

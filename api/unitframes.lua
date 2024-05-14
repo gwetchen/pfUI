@@ -1470,6 +1470,10 @@ function pfUI.uf:RefreshUnit(unit, component)
 
   -- create required fields
   local unitstr = unit.label..unit.id
+  if superwow_active then
+    local _, guid
+    _, guid = UnitExists(unitstr)
+  end
   local rawborder, default_border = GetBorderSize("unitframes")
 
   -- Buffs
@@ -1574,7 +1578,12 @@ function pfUI.uf:RefreshUnit(unit, component)
           local timeleft = GetPlayerBuffTimeLeft(GetPlayerBuff(PLAYER_BUFF_START_ID+unit.debuffs[i].id, "HARMFUL"),"HARMFUL")
           CooldownFrame_SetTimer(unit.debuffs[i].cd, GetTime(), timeleft, 1)
         elseif libdebuff then
-          local name, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unitstr, i)
+          local name, rank, texture, stacks, dtype, duration, timeleft
+          if superwow_active then
+            name, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unitstr, i, guid)
+          else
+            name, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unitstr, i)
+          end
           if duration and timeleft then
             CooldownFrame_SetTimer(unit.debuffs[i].cd, GetTime() + timeleft - duration, duration, 1)
           end
