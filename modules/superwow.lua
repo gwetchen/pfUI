@@ -25,7 +25,7 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
 
       -- add cast action to the database
       if not libcast.db[guid] then libcast.db[guid] = {} end
-      libcast.db[guid].unit = spell
+      libcast.db[guid].cast = spell
       libcast.db[guid].rank = nil
       libcast.db[guid].start = GetTime()
       libcast.db[guid].casttime = timer
