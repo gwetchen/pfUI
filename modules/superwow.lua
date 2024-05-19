@@ -32,16 +32,22 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
       libcast.db[guid].icon = icon
       libcast.db[guid].channel = event_type == "CHANNEL" or false
 
-      if event_type == "CAST" then --need more testing to see if other event types should count too
-        if not libdebuff.objects[target] then libdebuff.objects[target] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
-        if not libdebuff.objects[target][0] then libdebuff.objects[target][0] = {} end
-        if not libdebuff.objects[target][0][spell] then libdebuff.objects[target][0][spell] = {} end
-        libdebuff.objects[target][0][spell].effect = spell
-        libdebuff.objects[target][0][spell].start_old = libdebuff.objects[target][0][spell].start
-        libdebuff.objects[target][0][spell].start = GetTime()
-        libdebuff.objects[target][0][spell].rank = rank --not used for anything right now, can remove if no usecase found
-        libdebuff.objects[target][0][spell].duration = libdebuff:GetDuration(spell, rank)
+      local duration
+      if spell and rank then
+        duration = libdebuff:GetDuration(spell, rank)
+        --print(duration .. "  " .. target)
       end
+      libdebuff:AddPending(nil, 0, spell, duration, target)
+
+      --[[if not libdebuff.objects[target] then libdebuff.objects[target] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
+      if not libdebuff.objects[target][0] then libdebuff.objects[target][0] = {} end
+      if not libdebuff.objects[target][0][spell] then libdebuff.objects[target][0][spell] = {} end
+      libdebuff.objects[target][0][spell].effect = spell
+      libdebuff.objects[target][0][spell].start_old = libdebuff.objects[target][0][spell].start
+      libdebuff.objects[target][0][spell].start = GetTime()
+      libdebuff.objects[target][0][spell].rank = rank --not used for anything right now, can remove if no usecase found
+      libdebuff.objects[target][0][spell].duration = libdebuff:GetDuration(spell, rank)]]--
+      
 
       -- write state variable
       superwow_active = true

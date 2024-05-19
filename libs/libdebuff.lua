@@ -74,7 +74,10 @@ function libdebuff:UpdateUnits()
   pfUI.uf:RefreshUnit(pfUI.uf.target, "aura")
 end
 
-function libdebuff:AddPending(unit, unitlevel, effect, duration)
+function libdebuff:AddPending(unit, unitlevel, effect, duration, guid)
+  if superwow_active then --this doesn't seem to work on the very first cast, not sure how to fix
+    unit = guid or nil --make the unitName fail if superwow is active so pending[3] is empty. Combatlog castevents seem to fire first
+  end
   if not unit then return end
   if not L["debuffs"][effect] then return end
 
