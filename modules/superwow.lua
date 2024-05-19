@@ -37,7 +37,23 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
         duration = libdebuff:GetDuration(spell, rank)
         --print(duration .. "  " .. target)
       end
+
+      if UnitClass("player") == "Priest" then
+        local shadowSpells = {
+          ["Mind Flay"] = nil,
+          ["Shadow Word: Pain"] = nil,
+          ["Mind Blast"] = nil,
+        }
+        local _,_,_,_,count = GetTalentInfo(3,11)
+        if shadowSpells[spell] and count == 5 then
+          libdebuff:AddPending(nil, 0, "Shadow Vulnerability", 15, target)
+        end
+      end
+
       libdebuff:AddPending(nil, 0, spell, duration, target)
+
+      
+
 
       --[[if not libdebuff.objects[target] then libdebuff.objects[target] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
       if not libdebuff.objects[target][0] then libdebuff.objects[target][0] = {} end
