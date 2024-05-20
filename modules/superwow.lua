@@ -38,17 +38,18 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
         --print(duration .. "  " .. target)
       end
 
+      --[[local shadowSpells = {
+        ["Mind Flay"] = nil,
+        ["Shadow Word: Pain"] = nil,
+        ["Mind Blast"] = nil,
+      }
+
       if UnitClass("player") == "Priest" then
-        local shadowSpells = {
-          ["Mind Flay"] = nil,
-          ["Shadow Word: Pain"] = nil,
-          ["Mind Blast"] = nil,
-        }
         local _,_,_,_,count = GetTalentInfo(3,11)
         if shadowSpells[spell] and count == 5 then
           libdebuff:AddPending(nil, 0, "Shadow Vulnerability", 15, target)
         end
-      end
+      end]]--
 
       libdebuff:AddPending(nil, 0, spell, duration, target)
 
