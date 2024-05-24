@@ -80,12 +80,15 @@ function libdebuff:AddPending(unit, unitlevel, effect, duration, guid)
   end
   if not unit then return end
   if not L["debuffs"][effect] then return end
+  --print(effect)
+  --if effect == "Mind Blast" then duration = 1 end
 
-  if duration > 0 and libdebuff.pending[3] ~= effect then
+  if duration > 0 and libdebuff.pending[3] ~= effect then --mind blast gets removed here because it doesnt have a duration zzz
     libdebuff.pending[1] = unit
     libdebuff.pending[2] = unitlevel or 0
     libdebuff.pending[3] = effect
     libdebuff.pending[4] = duration or libdebuff:GetDuration(effect)
+    --print("Pending: " .. libdebuff.pending[1] .. " effect: " .. libdebuff.pending[3] .. "duration: " .. libdebuff.pending[4])
   end
 end
 
@@ -96,10 +99,25 @@ function libdebuff:RemovePending()
   libdebuff.pending[4] = nil
 end
 
+local shadowSpells = {
+        ["Mind Flay"] = true,
+        ["Shadow Word: Pain"] = true,
+        ["Mind Blast"] = true,
+      }
+
 function libdebuff:PersistPending(effect)
   if not libdebuff.pending[3] then return end
   if libdebuff.pending[3] == effect or ( effect == nil and libdebuff.pending[3] ) then
     libdebuff:AddEffect(libdebuff.pending[1], libdebuff.pending[2], libdebuff.pending[3], libdebuff.pending[4])
+
+    --[[if UnitClass("player") == "Priest" then
+      --print(libdebuff.pending[3])
+      local _,_,_,_,count = GetTalentInfo(3,11)
+      if shadowSpells[libdebuff.pending[3] and count == 5 then
+        libdebuff:AddEffect(libdebuff.pending[1], libdebuff.pending[2], "Shadow Vulnerability", 15)
+      end
+    end]]--
+    --print("Persisted: " .. libdebuff.pending[1] .. " effect: " .. libdebuff.pending[3] .. "duration: " .. libdebuff.pending[4])
     libdebuff:RemovePending()
   end
 end
@@ -206,10 +224,12 @@ libdebuff:SetScript("OnEvent", function()
       local effect = cmatch(arg1, msg)
       if effect and libdebuff.pending[3] == effect then
         -- instant removal of the pending spell
+        print(effect .. " removed")
         libdebuff:RemovePending()
         return
       elseif effect and lastspell and lastspell.start_old and lastspell.effect == effect then
         -- late removal of debuffs (e.g hunter arrows as they hit late)
+        print(effect .. " removed")
         libdebuff:RevertLastAction()
         return
       end

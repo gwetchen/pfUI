@@ -32,11 +32,15 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
       libcast.db[guid].icon = icon
       libcast.db[guid].channel = event_type == "CHANNEL" or false
 
-      local duration
+      local duration, playerGUID, _
       if spell and rank then
         duration = libdebuff:GetDuration(spell, rank)
-        --print(duration .. "  " .. target)
+        print(duration .. "  " .. target)
       end
+      _, playerGUID = UnitExists("player")
+
+
+      --if spell == "Mind Blast" then duration = 1 end
 
       --[[local shadowSpells = {
         ["Mind Flay"] = nil,
@@ -51,19 +55,19 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
         end
       end]]--
 
-      libdebuff:AddPending(nil, 0, spell, duration, target)
 
-      
-
-
-      --[[if not libdebuff.objects[target] then libdebuff.objects[target] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
-      if not libdebuff.objects[target][0] then libdebuff.objects[target][0] = {} end
-      if not libdebuff.objects[target][0][spell] then libdebuff.objects[target][0][spell] = {} end
-      libdebuff.objects[target][0][spell].effect = spell
-      libdebuff.objects[target][0][spell].start_old = libdebuff.objects[target][0][spell].start
-      libdebuff.objects[target][0][spell].start = GetTime()
-      libdebuff.objects[target][0][spell].rank = rank --not used for anything right now, can remove if no usecase found
-      libdebuff.objects[target][0][spell].duration = libdebuff:GetDuration(spell, rank)]]--
+      if guid == playerGUID then  --if player casted the spell we can check for resists
+        libdebuff:AddPending(nil, 0, spell, duration, target)  
+      else                        --if another player casted the spell we can not check for resists and will have to assume the spell hit
+        if not libdebuff.objects[target] then libdebuff.objects[target] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
+        if not libdebuff.objects[target][0] then libdebuff.objects[target][0] = {} end
+        if not libdebuff.objects[target][0][spell] then libdebuff.objects[target][0][spell] = {} end
+        libdebuff.objects[target][0][spell].effect = spell
+        libdebuff.objects[target][0][spell].start_old = libdebuff.objects[target][0][spell].start
+        libdebuff.objects[target][0][spell].start = GetTime()
+        --libdebuff.objects[target][0][spell].rank = rank --not used for anything right now, can remove if no usecase found
+        libdebuff.objects[target][0][spell].duration = libdebuff:GetDuration(spell, rank)
+      end
       
 
       -- write state variable
