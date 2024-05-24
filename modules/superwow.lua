@@ -32,35 +32,20 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
       libcast.db[guid].icon = icon
       libcast.db[guid].channel = event_type == "CHANNEL" or false
 
+      --get duration and player GUID for debuff tracking
       local duration, playerGUID, _
       if spell and rank then
         duration = libdebuff:GetDuration(spell, rank)
-        print(duration .. "  " .. target)
       end
       _, playerGUID = UnitExists("player")
 
-
-      --if spell == "Mind Blast" then duration = 1 end
-
-      --[[local shadowSpells = {
-        ["Mind Flay"] = nil,
-        ["Shadow Word: Pain"] = nil,
-        ["Mind Blast"] = nil,
-      }
-
-      if UnitClass("player") == "Priest" then
-        local _,_,_,_,count = GetTalentInfo(3,11)
-        if shadowSpells[spell] and count == 5 then
-          libdebuff:AddPending(nil, 0, "Shadow Vulnerability", 15, target)
-        end
-      end]]--
-
-
-      if guid == playerGUID then  --if player casted the spell we can check for resists
-        libdebuff:AddPending(nil, 0, spell, duration, target)  
-      else                        --if another player casted the spell we can not check for resists and will have to assume the spell hit
-        if not libdebuff.objects[target] then libdebuff.objects[target] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
-        if not libdebuff.objects[target][0] then libdebuff.objects[target][0] = {} end
+      --if the player casted the spell we can check for resists using libdebuff's pending
+      if guid == playerGUID then
+        libdebuff:AddPending(nil, 0, spell, duration, target)
+      --if another player casted the spell we can not check for resists and have to assume the spell hit
+      else
+        if not libdebuff.objects[target] then libdebuff.objects[target] = {} end
+        if not libdebuff.objects[target][0] then libdebuff.objects[target][0] = {} end --Unitlevel seems to be used for differentiating targets therefore no use looking it up every time here
         if not libdebuff.objects[target][0][spell] then libdebuff.objects[target][0][spell] = {} end
         libdebuff.objects[target][0][spell].effect = spell
         libdebuff.objects[target][0][spell].start_old = libdebuff.objects[target][0][spell].start
@@ -69,7 +54,6 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
         libdebuff.objects[target][0][spell].duration = libdebuff:GetDuration(spell, rank)
       end
       
-
       -- write state variable
       superwow_active = true
     elseif arg3 == "FAIL" then
@@ -83,7 +67,7 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
         libcast.db[guid].casttime = nil
         libcast.db[guid].icon = nil
         libcast.db[guid].channel = nil
-      end
+      end    
     end
   end)
 end)

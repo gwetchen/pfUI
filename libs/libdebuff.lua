@@ -75,20 +75,17 @@ function libdebuff:UpdateUnits()
 end
 
 function libdebuff:AddPending(unit, unitlevel, effect, duration, guid)
-  if superwow_active then --this doesn't seem to work on the very first cast, not sure how to fix
-    unit = guid or nil --make the unitName fail if superwow is active so pending[3] is empty. Combatlog castevents seem to fire first
+  if superwow_active then --this doesn't work on the very first cast, not sure how to fix
+    unit = guid or nil --Throw away data with the unitname to prevent it from filling up the table before we get GUID info. Combatlog cast events seem to fire first and stop us from adding GUID info
   end
   if not unit then return end
   if not L["debuffs"][effect] then return end
-  --print(effect)
-  --if effect == "Mind Blast" then duration = 1 end
 
-  if duration > 0 and libdebuff.pending[3] ~= effect then --mind blast gets removed here because it doesnt have a duration zzz
+  if duration > 0 and libdebuff.pending[3] ~= effect then
     libdebuff.pending[1] = unit
     libdebuff.pending[2] = unitlevel or 0
     libdebuff.pending[3] = effect
     libdebuff.pending[4] = duration or libdebuff:GetDuration(effect)
-    --print("Pending: " .. libdebuff.pending[1] .. " effect: " .. libdebuff.pending[3] .. "duration: " .. libdebuff.pending[4])
   end
 end
 
@@ -99,25 +96,10 @@ function libdebuff:RemovePending()
   libdebuff.pending[4] = nil
 end
 
-local shadowSpells = {
-        ["Mind Flay"] = true,
-        ["Shadow Word: Pain"] = true,
-        ["Mind Blast"] = true,
-      }
-
 function libdebuff:PersistPending(effect)
   if not libdebuff.pending[3] then return end
   if libdebuff.pending[3] == effect or ( effect == nil and libdebuff.pending[3] ) then
     libdebuff:AddEffect(libdebuff.pending[1], libdebuff.pending[2], libdebuff.pending[3], libdebuff.pending[4])
-
-    --[[if UnitClass("player") == "Priest" then
-      --print(libdebuff.pending[3])
-      local _,_,_,_,count = GetTalentInfo(3,11)
-      if shadowSpells[libdebuff.pending[3] and count == 5 then
-        libdebuff:AddEffect(libdebuff.pending[1], libdebuff.pending[2], "Shadow Vulnerability", 15)
-      end
-    end]]--
-    --print("Persisted: " .. libdebuff.pending[1] .. " effect: " .. libdebuff.pending[3] .. "duration: " .. libdebuff.pending[4])
     libdebuff:RemovePending()
   end
 end
