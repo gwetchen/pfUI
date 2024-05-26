@@ -275,7 +275,10 @@ function libdebuff:UnitDebuff(unit, id, guid)
       timeleft = duration + libdebuff.objects[unitname][0][effect].start - GetTime()
     end
   end
-
+  if effect and duration then
+  print(effect)
+  print(duration)
+  end
   return effect, rank, texture, stacks, dtype, duration, timeleft
 end
 

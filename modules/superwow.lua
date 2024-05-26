@@ -33,14 +33,19 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
       libcast.db[guid].channel = event_type == "CHANNEL" or false
 
       --get duration and player GUID for debuff tracking
-      local duration, playerGUID, _
+      local duration, playerGUID, _, isSeal
       if spell and rank then
         duration = libdebuff:GetDuration(spell, rank)
       end
       _, playerGUID = UnitExists("player")
 
+      --check if we're looking at a seal, seals don't work with libdebuff's pending
+      for key, value in L["judgements"] do
+        if key == spell
+        then isSeal = true end
+      end
       --if the player casted the spell we can check for resists using libdebuff's pending
-      if guid == playerGUID then
+      if guid == playerGUID and isSeal == false then
         libdebuff:AddPending(nil, 0, spell, duration, target)
       --if another player casted the spell we can not check for resists and have to assume the spell hit
       else
