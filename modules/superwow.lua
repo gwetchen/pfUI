@@ -1,6 +1,7 @@
 -- Compatibility layer to use castbars provided by SuperWoW:
 -- https://github.com/balakethelock/SuperWoW
 pfUI:RegisterModule("superwow", "vanilla", function ()
+  PfHoTs = {}
   local unitcast = CreateFrame("Frame")
   unitcast:RegisterEvent("UNIT_CASTEVENT")
   unitcast:SetScript("OnEvent", function()
@@ -57,6 +58,55 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
         libdebuff.objects[target][0][spell].start = GetTime()
         --libdebuff.objects[target][0][spell].rank = rank --not used for anything right now, can remove if no usecase found
         libdebuff.objects[target][0][spell].duration = libdebuff:GetDuration(spell, rank)
+      end
+
+      
+
+      if spell == "Rejuvenation" then
+        local unitstr
+        for i=1,40 do
+          unitstr = "raid" .. i
+          local _, raidGUID = UnitExists(unitstr)
+          if raidGUID == target then
+            break
+          end
+        end
+        if unitstr ~= nil then
+          if not PfHoTs[unitstr] then
+          PfHoTs[unitstr] = {}
+          end
+          if not PfHoTs[unitstr]["Reju"] then
+           PfHoTs[unitstr]["Reju"] = {}
+          end
+          PfHoTs[unitstr]["Reju"].dur = 11
+          PfHoTs[unitstr]["Reju"].start = start
+        end
+
+
+        --[[if UnitInRaid("player") then
+          for i=1,40 do
+            local unitstr = "raid" .. i
+            local _, raidGUID = UnitExists(unitstr)
+            if raidGUID == target then
+              print(unitstr)
+              pfUI.uf:AddIcon("pf" .. unitstr, 1, "interface\\icons\\spell_nature_rejuvenation", 12, 1)
+            end
+          end
+        else
+          if playerGUID == target then
+            pfUI.uf:AddIcon(unitstr, 1, "interface\\icons\\spell_nature_rejuvenation", 12, 1)
+            playerlist = playerlist .. ( not first and ", " or "") .. GetUnitColor("player") .. UnitName("player") .. "|r"
+            first = nil
+          end
+    
+          for i=1,4 do
+            local unitstr = "party" .. i
+            if not UnitHasBuff(unitstr, texture) and UnitName(unitstr) then
+              playerlist = playerlist .. ( not first and ", " or "") .. GetUnitColor(unitstr) .. UnitName(unitstr) .. "|r"
+              first = nil
+            end
+          end
+        end--]]
       end
       
       -- write state variable

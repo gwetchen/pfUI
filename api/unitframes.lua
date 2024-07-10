@@ -1745,9 +1745,21 @@ function pfUI.uf:RefreshUnit(unit, component)
           -- match filter
           for _, filter in pairs(unit.indicators) do
             if filter == string.lower(texture) then
-              pfUI.uf:AddIcon(unit, pos, texture, timeleft, count)
-              pos = pos + 1
-              break
+              if string.lower(texture) == "interface\\icons\\spell_nature_rejuvenation" then --are we looking at rejuv
+                if PfHoTs then --and PfHoTs[unitstr] and PfHoTs[unitstr]["Reju"] and PfHoTs[unitstr]["Reju"].start and PfHoTs[unitstr]["Reju"].dur then
+                  local start = PfHoTs[unitstr]["Reju"].start
+                  local dur = PfHoTs[unitstr]["Reju"].dur
+                  timeleft = (start + dur) - GetTime() 
+                  print(timeleft .. "     ," .. start .. "     ," .. dur)
+                  pfUI.uf:AddIcon(unit, pos, texture, timeleft, count)
+                  pos = pos + 1
+                end
+                break
+              else
+                pfUI.uf:AddIcon(unit, pos, texture, timeleft, count)
+                pos = pos + 1
+                break
+              end
             end
           end
         end
@@ -1770,10 +1782,10 @@ function pfUI.uf:RefreshUnit(unit, component)
 
           -- match filter
           for _, filter in pairs(unit.indicator_custom) do
-            if filter == string.lower(name) then
-              pfUI.uf:AddIcon(unit, pos, texture, timeleft, count)
-              pos = pos + 1
-              break
+            if filter == string.lower(name) then             
+                pfUI.uf:AddIcon(unit, pos, texture, timeleft, count)
+                pos = pos + 1
+                break        
             end
           end
         end
