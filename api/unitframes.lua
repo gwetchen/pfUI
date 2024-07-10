@@ -1750,7 +1750,7 @@ function pfUI.uf:RefreshUnit(unit, component)
                   local start = PfHoTs[unitstr]["Reju"].start
                   local dur = PfHoTs[unitstr]["Reju"].dur
                   timeleft = (start + dur) - GetTime() 
-                  print(timeleft .. "     ," .. start .. "     ," .. dur)
+                  --print(timeleft .. "     ," .. start .. "     ," .. dur)
                   pfUI.uf:AddIcon(unit, pos, texture, timeleft, count)
                   pos = pos + 1
                 end

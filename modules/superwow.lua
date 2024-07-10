@@ -78,7 +78,7 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
           if not PfHoTs[unitstr]["Reju"] then
            PfHoTs[unitstr]["Reju"] = {}
           end
-          PfHoTs[unitstr]["Reju"].dur = 11
+          PfHoTs[unitstr]["Reju"].dur = 12
           PfHoTs[unitstr]["Reju"].start = start
         end
 
