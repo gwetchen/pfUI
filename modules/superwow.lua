@@ -4,7 +4,6 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
   local unitcast = CreateFrame("Frame")
   unitcast:RegisterEvent("UNIT_CASTEVENT")
   unitcast:SetScript("OnEvent", function()
-  libpredict.hots = {}
     if arg3 == "START" or arg3 == "CAST" or arg3 == "CHANNEL" then
       -- human readable argument list
       local guid = arg1
@@ -34,7 +33,7 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
       libcast.db[guid].channel = event_type == "CHANNEL" or false
 
       --get duration and player GUID for debuff tracking
-      local duration, playerGUID, _, isSealm
+      local duration, playerGUID, _, isSeal
       if spell and rank then
         duration = libdebuff:GetDuration(spell, rank)
       end
@@ -58,17 +57,6 @@ pfUI:RegisterModule("superwow", "vanilla", function ()
         libdebuff.objects[target][0][spell].start = GetTime()
         --libdebuff.objects[target][0][spell].rank = rank --not used for anything right now, can remove if no usecase found
         libdebuff.objects[target][0][spell].duration = libdebuff:GetDuration(spell, rank)
-      end
-
-      --if not libpredict.hots then libpredict.hots = {} end
-
-      if spell == "Rejuvenation" then
-        print(target)
-        print(spell)
-        if not libpredict.hots[target] then libpredict.hots[target] = {} end
-        if not libpredict.hots[target][spell] then libpredict.hots[target][spell] = {} end
-        libpredict.hots[target][spell].start = GetTime()
-        libpredict.hots[target][spell].duration = duration
       end
       
       -- write state variable
