@@ -206,12 +206,12 @@ libdebuff:SetScript("OnEvent", function()
       local effect = cmatch(arg1, msg)
       if effect and libdebuff.pending[3] == effect then
         -- instant removal of the pending spell
-        print(effect .. " removed")
+        --print(effect .. " removed")
         libdebuff:RemovePending()
         return
       elseif effect and lastspell and lastspell.start_old and lastspell.effect == effect then
         -- late removal of debuffs (e.g hunter arrows as they hit late)
-        print(effect .. " removed")
+        --print(effect .. " removed")
         libdebuff:RevertLastAction()
         return
       end
@@ -276,8 +276,8 @@ function libdebuff:UnitDebuff(unit, id, guid)
     end
   end
   if effect and duration then
-  print(effect)
-  print(duration)
+  --print(effect)
+  --print(duration)
   end
   return effect, rank, texture, stacks, dtype, duration, timeleft
 end
