@@ -518,7 +518,6 @@ libpredict.sender:SetScript("OnEvent", function()
     if pfUI.client < 20000 then -- vanilla
       if spell_queue[1] == "Rejuvenation" then
         libpredict.sender:SendHealCommMsg("Reju/"..spell_queue[3].."/"..rejuvDuration.."/")
-        print("Reju/"..spell_queue[3].."/"..rejuvDuration.."/")
       elseif spell_queue[1] == "Renew" then
         libpredict.sender:SendHealCommMsg("Renew/"..spell_queue[3].."/"..renewDuration.."/")
       elseif spell_queue[1] == "Regrowth" then
